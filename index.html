@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Decision Quality Index | BlueChip People Strategies</title>
+  <meta name="description" content="18 questions. 5 minutes. Discover your decision-making archetype and where your thinking breaks down under pressure." />
+  <meta property="og:title" content="Decision Quality Index | BlueChip People Strategies" />
+  <meta property="og:description" content="Find out how you really make decisions." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0A0A0A;
+      color: #E8D5B7;
+      font-family: Georgia, 'Times New Roman', serif;
+      min-height: 100vh;
+    }
+    .screen { display: none; min-height: 100vh; position: relative; }
+    .screen.active { display: block; }
+    .inner { max-width: 560px; margin: 0 auto; padding: 60px 24px; }
+    .gold-bar-top { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: #C8A96E; z-index: 100; }
+
+    /* ── TYPOGRAPHY ── */
+    .eyebrow { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9px; letter-spacing: 0.4em; color: #C8A96E; text-transform: uppercase; margin-bottom: 16px; }
+    .headline { font-size: clamp(40px, 8vw, 56px); font-weight: bold; line-height: 1.1; margin-bottom: 8px; color: #E8D5B7; }
+    .headline .gold { color: #C8A96E; }
+    .gold-rule { width: 60px; height: 2px; background: #C8A96E; margin: 20px 0; }
+    .body-text { font-size: 15px; color: #888; line-height: 1.8; margin-bottom: 32px; max-width: 440px; }
+
+    /* ── CARD ── */
+    .card { background: #111; border: 1px solid #222; border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+    .card-label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.3em; color: #C8A96E; text-transform: uppercase; margin-bottom: 16px; }
+    .feature-item { display: flex; gap: 12px; margin-bottom: 12px; align-items: flex-start; }
+    .feature-dot { color: #C8A96E; font-size: 12px; margin-top: 3px; flex-shrink: 0; }
+    .feature-text { font-size: 13px; color: #AAA; line-height: 1.5; }
+
+    /* ── BUTTONS ── */
+    .btn-gold {
+      display: block; width: 100%; padding: 16px 40px;
+      background: #C8A96E; color: #0A0A0A;
+      border: none; border-radius: 12px;
+      font-size: 15px; font-weight: bold; font-family: inherit;
+      letter-spacing: 0.05em; cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-gold:hover { opacity: 0.9; }
+    .btn-outline {
+      display: block; width: 100%; padding: 12px;
+      background: transparent; color: #555;
+      border: 1px solid #222; border-radius: 10px;
+      font-size: 12px; font-family: inherit;
+      cursor: pointer; transition: border-color 0.15s;
+    }
+    .btn-outline:hover { border-color: #444; }
+    .meta-text { text-align: center; margin-top: 16px; font-size: 11px; color: #444; font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-track { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: #1A1A1A; z-index: 100; }
+    .progress-fill { height: 4px; background: #C8A96E; transition: width 0.4s ease; }
+
+    /* ── ASSESSMENT ── */
+    .assess-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; padding-top: 20px; }
+    .assess-brand { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 10px; letter-spacing: 0.3em; color: #C8A96E; text-transform: uppercase; }
+    .assess-count { font-size: 12px; color: #555; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .assess-count span { color: #333; }
+    .trap-badge {
+      display: inline-block; font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 9px; letter-spacing: 0.3em; color: #555;
+      background: #111; border: 1px solid #222; border-radius: 6px;
+      padding: 4px 10px; margin-bottom: 20px; text-transform: uppercase;
+    }
+    .question-text {
+      font-size: clamp(17px, 3.5vw, 21px); font-weight: bold;
+      line-height: 1.5; color: #E8D5B7; margin-bottom: 48px;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+    .question-text.fade-out { opacity: 0; transform: translateY(8px); }
+
+    /* ── ANSWER OPTIONS ── */
+    .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .option-btn {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 20px; border-radius: 12px; cursor: pointer;
+      border: 1px solid #1E1E1E; background: #111;
+      color: #888; font-family: inherit; font-size: 14px;
+      transition: all 0.15s ease; text-align: left; width: 100%;
+    }
+    .option-btn:hover { border-color: #333; color: #AAA; }
+    .option-btn.selected { border-color: #C8A96E; background: rgba(200,169,110,0.12); color: #C8A96E; }
+    .radio-circle {
+      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+      border: 2px solid #2A2A2A; background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s ease;
+    }
+    .option-btn.selected .radio-circle { border-color: #C8A96E; background: #C8A96E; }
+    .radio-inner { width: 8px; height: 8px; border-radius: 50%; background: #0A0A0A; display: none; }
+    .option-btn.selected .radio-inner { display: block; }
+    .option-label { font-weight: normal; }
+    .option-btn.selected .option-label { font-weight: bold; }
+    .back-btn {
+      background: transparent; border: none; color: #444;
+      font-size: 12px; cursor: pointer; font-family: inherit; padding: 0;
+    }
+    .back-btn:hover { color: #666; }
+
+    /* ── EMAIL GATE ── */
+    .gate-check { display: flex; align-items: center; gap: 10px; margin-bottom: 40px; padding-top: 20px; }
+    .check-circle {
+      width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(200,169,110,0.15); border: 1px solid #C8A96E;
+      display: flex; align-items: center; justify-content: center;
+      color: #C8A96E; font-size: 16px;
+    }
+    .check-label { font-size: 12px; color: #C8A96E; font-weight: bold; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .check-sub { font-size: 11px; color: #555; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .gate-headline { font-size: clamp(24px, 5vw, 32px); font-weight: bold; color: #E8D5B7; line-height: 1.3; margin-bottom: 12px; }
+    .gate-body { font-size: 14px; color: #666; line-height: 1.7; margin-bottom: 36px; }
+    .input-field {
+      width: 100%; background: #111; border: 1px solid #222;
+      border-radius: 10px; padding: 14px 18px;
+      color: #E8D5B7; font-size: 15px; font-family: inherit;
+      outline: none; transition: border-color 0.2s; margin-bottom: 14px;
+      display: block;
+    }
+    .input-field:focus { border-color: #C8A96E; }
+    .input-field.error { border-color: #DA8A8A; }
+    .error-msg { font-size: 12px; color: #DA8A8A; margin-top: -10px; margin-bottom: 14px; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .privacy-note { display: flex; align-items: flex-start; gap: 8px; margin-top: 20px; }
+    .privacy-icon { font-size: 14px; color: #333; flex-shrink: 0; }
+    .privacy-text { font-size: 11px; color: #444; line-height: 1.5; font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+    /* ── RESULTS ── */
+    .result-brand { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9px; letter-spacing: 0.4em; color: #555; text-transform: uppercase; margin-bottom: 32px; padding-top: 20px; }
+    .greeting { font-size: 14px; color: #666; margin-bottom: 8px; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .score-row { display: flex; align-items: center; gap: 32px; margin-bottom: 32px; }
+    .score-ring-wrap { position: relative; flex-shrink: 0; }
+    .score-ring-wrap svg { transform: rotate(-90deg); }
+    .score-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .score-num { font-size: 28px; font-weight: bold; line-height: 1; }
+    .score-denom { font-size: 9px; color: #555; letter-spacing: 0.1em; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .archetype-label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; color: #555; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 6px; }
+    .archetype-symbol { font-size: 32px; margin-bottom: 2px; }
+    .archetype-name { font-size: 22px; font-weight: bold; color: #E8D5B7; line-height: 1.2; }
+    .archetype-tagline { font-size: 12px; color: #666; margin-top: 4px; font-style: italic; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .divider { height: 1px; background: #1E1E1E; margin-bottom: 28px; }
+    .summary-text { font-size: 14px; color: #AAA; line-height: 1.8; margin-bottom: 28px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+    .mini-card { background: #111; border: 1px solid #1E1E1E; border-radius: 12px; padding: 16px; }
+    .mini-label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 12px; }
+    .mini-item { display: flex; gap: 8px; margin-bottom: 8px; align-items: flex-start; }
+    .mini-dot { font-size: 8px; margin-top: 4px; flex-shrink: 0; }
+    .mini-text { font-size: 11px; color: #888; line-height: 1.5; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .next-card { background: #111; border-radius: 0 12px 12px 0; padding: 20px; margin-bottom: 32px; }
+    .next-label { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 10px; }
+    .next-text { font-size: 13px; color: #AAA; line-height: 1.7; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .cta-card { background: #111; border: 1px solid #222; border-radius: 16px; padding: 24px; margin-bottom: 24px; text-align: center; }
+    .cta-title { font-size: 15px; font-weight: bold; color: #E8D5B7; margin-bottom: 8px; }
+    .cta-body { font-size: 12px; color: #666; margin-bottom: 20px; line-height: 1.6; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .cta-btn {
+      display: inline-block; background: #C8A96E; color: #0A0A0A;
+      border-radius: 10px; padding: 12px 28px; font-size: 13px;
+      font-weight: bold; letter-spacing: 0.04em; text-decoration: none;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    .cta-url { font-size: 11px; color: #444; margin-top: 12px; font-family: 'Helvetica Neue', Arial, sans-serif; }
+    .copyright { text-align: center; margin-top: 20px; font-size: 10px; color: #333; font-family: 'Helvetica Neue', Arial, sans-serif; }
+
+    @media (max-width: 600px) {
+      .two-col { grid-template-columns: 1fr; }
+      .score-row { gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════ -->
+<!-- INTRO SCREEN                          -->
+<!-- ══════════════════════════════════════ -->
+<div id="screen-intro" class="screen active">
+  <div class="gold-bar-top"></div>
+  <div class="inner">
+    <div class="eyebrow">BlueChip People Strategies</div>
+    <h1 class="headline">Decision<br><span class="gold">Quality</span><br>Index</h1>
+    <div class="gold-rule"></div>
+    <p class="body-text">18 questions. 5 minutes. A precise read on how you actually make decisions — and where your thinking breaks down under pressure.</p>
+    <div class="card">
+      <div class="card-label">You'll discover</div>
+      <div class="feature-item"><div class="feature-dot">◆</div><div class="feature-text">Your Decision Quality Score out of 100</div></div>
+      <div class="feature-item"><div class="feature-dot">◆</div><div class="feature-text">Your decision-maker archetype</div></div>
+      <div class="feature-item"><div class="feature-dot">◆</div><div class="feature-text">The specific traps most likely to derail you</div></div>
+      <div class="feature-item"><div class="feature-dot">◆</div><div class="feature-text">Personalized next steps to sharpen your thinking</div></div>
+    </div>
+    <p style="font-size:12px;color:#555;margin-bottom:24px;line-height:1.7;">Answer based on how you <em style="color:#888">actually</em> behave — not how you wish you did.</p>
+    <button class="btn-gold" onclick="startAssessment()">Begin Assessment →</button>
+    <div class="meta-text">5 archetypes · 18 questions · Free</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- ASSESSMENT SCREEN                     -->
+<!-- ══════════════════════════════════════ -->
+<div id="screen-assessment" class="screen">
+  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="inner" style="padding-top:48px;">
+    <div class="assess-header">
+      <div class="assess-brand">Decision Quality Index</div>
+      <div class="assess-count" id="q-count">1 <span>/ 18</span></div>
+    </div>
+    <div class="trap-badge" id="trap-badge">—</div>
+    <div class="question-text" id="question-text">Loading...</div>
+    <div class="options" id="options-container"></div>
+    <button class="back-btn" id="back-btn" onclick="prevQuestion()" style="display:none">← Previous</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- EMAIL GATE SCREEN                     -->
+<!-- ══════════════════════════════════════ -->
+<div id="screen-gate" class="screen">
+  <div class="gold-bar-top"></div>
+  <div class="inner">
+    <div class="gate-check">
+      <div class="check-circle">✓</div>
+      <div>
+        <div class="check-label">Assessment complete</div>
+        <div class="check-sub">Your results are ready</div>
+      </div>
+    </div>
+    <h2 class="gate-headline">Where should we<br>send your results?</h2>
+    <p class="gate-body">Enter your details below to see your Decision Quality Score, your archetype, and your personalized next steps.</p>
+    <input class="input-field" id="input-name" type="text" placeholder="First name" />
+    <input class="input-field" id="input-email" type="email" placeholder="Email address" />
+    <div class="error-msg" id="email-error" style="display:none">Please enter a valid email address.</div>
+    <button class="btn-gold" id="gate-submit-btn" onclick="submitEmail()">See My Results →</button>
+    <div class="privacy-note">
+      <div class="privacy-icon">🔒</div>
+      <div class="privacy-text">No spam. No selling your data. Just your results and occasional insights from BlueChip.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- RESULT SCREEN                         -->
+<!-- ══════════════════════════════════════ -->
+<div id="screen-result" class="screen">
+  <div id="result-top-bar" style="position:fixed;top:0;left:0;right:0;height:4px;z-index:100;"></div>
+  <div class="inner">
+    <div class="result-brand">BlueChip People Strategies · Decision Quality Index</div>
+    <div class="greeting" id="result-greeting" style="display:none"></div>
+    <div class="score-row">
+      <div class="score-ring-wrap">
+        <svg width="128" height="128" viewBox="0 0 128 128">
+          <circle cx="64" cy="64" r="54" fill="none" stroke="#1A1A1A" stroke-width="8"/>
+          <circle id="score-arc" cx="64" cy="64" r="54" fill="none" stroke="#C8A96E" stroke-width="8"
+            stroke-dasharray="339.292" stroke-dashoffset="339.292"
+            stroke-linecap="round" style="transition: stroke-dashoffset 1.2s ease;"/>
+        </svg>
+        <div class="score-overlay">
+          <div class="score-num" id="score-display">—</div>
+          <div class="score-denom">/ 100</div>
+        </div>
+      </div>
+      <div>
+        <div class="archetype-label">Your archetype</div>
+        <div class="archetype-symbol" id="archetype-symbol">—</div>
+        <div class="archetype-name" id="archetype-name">—</div>
+        <div class="archetype-tagline" id="archetype-tagline">—</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="summary-text" id="archetype-summary">—</div>
+    <div class="two-col">
+      <div class="mini-card">
+        <div class="mini-label" style="color:#C8A96E">Strengths</div>
+        <div id="strengths-list"></div>
+      </div>
+      <div class="mini-card">
+        <div class="mini-label" style="color:#DA8A8A">Watch outs</div>
+        <div id="watchouts-list"></div>
+      </div>
+    </div>
+    <div class="next-card" id="next-card">
+      <div class="next-label" id="next-label">Your next move</div>
+      <div class="next-text" id="next-text">—</div>
+    </div>
+    <div class="cta-card">
+      <div class="cta-title">Go deeper on your decision quality</div>
+      <div class="cta-body">The Think Better. Decide Faster. playbook covers all 6 traps in depth — with real examples, self-checks, and the full Decision Quality Framework.</div>
+      <a class="cta-btn" href="https://bluechip-people-strategies.com" target="_blank" rel="noreferrer">Get the Playbook — $19</a>
+      <div class="cta-url">bluechip-people-strategies.com</div>
+    </div>
+    <button class="btn-outline" onclick="restart()">Retake the assessment</button>
+    <div class="copyright">© BlueChip People Strategies</div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const QUESTIONS = [
+  { id:1,  trap:"Sunk Cost",         reverse:true,  text:"When a project I've invested heavily in starts failing, I find it hard to walk away even when the evidence says I should." },
+  { id:2,  trap:"Outcome Bias",      reverse:true,  text:"After a decision goes badly, I question whether it was a good decision — even if my reasoning was sound at the time." },
+  { id:3,  trap:"Process",           reverse:false, text:"Before making a significant decision, I can clearly articulate what I know, what I don't know, and what I'm assuming." },
+  { id:4,  trap:"Confirmation Bias", reverse:false, text:"I actively seek out perspectives that challenge my initial view before finalizing an important decision." },
+  { id:5,  trap:"Groupthink",        reverse:true,  text:"In group settings, I find myself adjusting my opinion to match the room — even when I privately disagree." },
+  { id:6,  trap:"Options",           reverse:false, text:"I routinely consider at least three real options before committing to a course of action." },
+  { id:7,  trap:"Anchoring",         reverse:true,  text:"The first number or option I encounter in a negotiation or decision tends to heavily influence my final choice." },
+  { id:8,  trap:"Loss Aversion",     reverse:true,  text:"The fear of losing what I have influences my decisions more than the potential to gain something better." },
+  { id:9,  trap:"Recording",         reverse:false, text:"I document the reasoning behind significant decisions so I can review them later — not just what I decided, but why." },
+  { id:10, trap:"Urgency",           reverse:false, text:"I can distinguish between real urgency and manufactured urgency when making decisions under pressure." },
+  { id:11, trap:"Outcome Bias",      reverse:true,  text:"I evaluate decisions differently depending on whether they turned out well or badly." },
+  { id:12, trap:"Inaction",          reverse:false, text:"I recognize that choosing not to decide is itself a decision with consequences." },
+  { id:13, trap:"Confirmation Bias", reverse:false, text:"I can name the strongest argument against a position I currently hold." },
+  { id:14, trap:"Sunk Cost",         reverse:false, text:"I base decisions on future potential — not on what I've already invested." },
+  { id:15, trap:"Stakes",            reverse:false, text:"I calibrate the time and energy I spend on a decision to its actual stakes — rather than treating all decisions the same." },
+  { id:16, trap:"Groupthink",        reverse:false, text:"I create space for dissent and minority opinions before reaching group consensus." },
+  { id:17, trap:"Loss Aversion",     reverse:true,  text:"I hold onto losing positions — jobs, relationships, investments — longer than rational analysis would support." },
+  { id:18, trap:"Process",           reverse:false, text:"I have a consistent process I apply to significant decisions — not just gut instinct." },
+];
+
+const ARCHETYPES = [
+  { min:85, max:100, name:"The Strategist", symbol:"♠", color:"#C8A96E",
+    tagline:"Deliberate. Process-driven. Bias-aware.",
+    summary:"You operate with a level of decision discipline that most professionals never develop. You separate process from outcome, manage cognitive traps actively, and bring structured thinking to high-stakes situations. Your decisions aren't always right — but they're defensible, and you learn from both outcomes.",
+    strengths:["Strong process discipline under pressure","Actively seeks contrary evidence before deciding","Evaluates decisions on reasoning, not results"],
+    watchouts:["Overthinking low-stakes decisions","Frustration when others don't apply the same rigour","Analysis paralysis on genuinely uncertain calls"],
+    next:"You're operating at a high level. The next frontier is speed — making sharp decisions faster without sacrificing quality. Consider how you can compress your process for time-sensitive situations." },
+  { min:68, max:84, name:"The Analyst", symbol:"♦", color:"#A8C5DA",
+    tagline:"Thorough. Thoughtful. Occasionally slow.",
+    summary:"You think carefully before deciding and generally avoid the most obvious cognitive traps. Your strength is in gathering and weighing information. Your vulnerability is speed — you can get caught in analysis loops, and under pressure your process sometimes collapses into gut instinct.",
+    strengths:["Strong information-gathering before deciding","Generally aware of your own biases","Comfortable with complexity and nuance"],
+    watchouts:["Slow to decide when speed matters","Process weakens significantly under time pressure","Tendency to over-research rather than act on good-enough information"],
+    next:"Focus on building a faster trap-check habit — a 60-second mental audit you can run even under pressure. The goal isn't perfection, it's defensibility." },
+  { min:50, max:67, name:"The Reactor", symbol:"♣", color:"#C8A96E",
+    tagline:"Fast. Confident. Inconsistently right.",
+    summary:"You decide quickly and often confidently — which is a genuine asset in fast-moving situations. But your consistency is your gap. On good days your instincts serve you well. On bad days, cognitive traps run unchecked and you mistake confidence for competence. Your results are higher-variance than they need to be.",
+    strengths:["Decisive under pressure","Comfortable with ambiguity","High action bias — you move when others freeze"],
+    watchouts:["Sunk cost and loss aversion operating unchecked","Outcome bias — judging past decisions by results, not process","Resistance to slowing down even when stakes are high"],
+    next:"The highest-leverage change you can make: before any significant decision, write down your reasoning in one paragraph. This single habit will catch more errors than any other change." },
+  { min:33, max:49, name:"The Drifter", symbol:"♥", color:"#DA8A8A",
+    tagline:"Cautious. Reactive. Conflict-averse.",
+    summary:"You tend to avoid decisions — especially difficult, high-stakes, or socially uncomfortable ones. This often looks like patience or humility, but it's frequently a form of loss aversion: the pain of making a wrong call feels worse than the cost of not deciding. Others often make decisions for you by default.",
+    strengths:["Low impulsivity — you rarely make rash calls","Sensitive to group dynamics and interpersonal impact","Often the voice of caution in overconfident teams"],
+    watchouts:["Inaction treated as a neutral choice when it isn't","Over-reliance on consensus to avoid ownership","Sunk cost and status quo bias keeping you stuck"],
+    next:"Start small. Pick one low-stakes decision you've been avoiding and make it this week — with a written rationale. Decision-making is a skill, and it atrophies without practice." },
+  { min:0,  max:32, name:"The Passenger", symbol:"✦", color:"#888888",
+    tagline:"Reactive. Unaware. High potential.",
+    summary:"Right now, decisions are largely happening to you rather than by you. This isn't a character flaw — it's a skill gap. Most people are never taught to think deliberately about how they decide. The fact that you're here, taking this assessment, already puts you ahead of most.",
+    strengths:["High upside — awareness is the starting point for everything","Openness to learning (you're here)","Less anchored to existing habits than high-scorers"],
+    watchouts:["Cognitive traps operating completely unchecked","Decisions driven by emotion, social pressure, or avoidance","Outcomes being attributed to luck rather than process"],
+    next:"Start with one concept from this assessment — pick the trap that resonated most — and spend one week noticing when it shows up. Awareness before action. That's the whole game at this stage." },
+];
+
+const LABELS = ["Never","Rarely","Sometimes","Often","Always"];
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+let current = 0;
+let answers = {};
+let finalScore = null;
+let userName = "";
+
+// ══════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ══════════════════════════════════════════
+// ASSESSMENT
+// ══════════════════════════════════════════
+function startAssessment() {
+  current = 0; answers = {};
+  renderQuestion();
+  showScreen('assessment');
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  const pct = Math.round((current / QUESTIONS.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-count').innerHTML = (current+1) + ' <span>/ ' + QUESTIONS.length + '</span>';
+  document.getElementById('trap-badge').textContent = q.trap;
+  document.getElementById('question-text').textContent = q.text;
+  document.getElementById('back-btn').style.display = current > 0 ? 'block' : 'none';
+
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  LABELS.forEach((label, i) => {
+    const val = i + 1;
+    const btn = document.createElement('button');
+    btn.className = 'option-btn' + (answers[q.id] === val ? ' selected' : '');
+    btn.innerHTML = `
+      <div class="radio-circle"><div class="radio-inner"></div></div>
+      <span class="option-label">${label}</span>`;
+    btn.onclick = () => selectAnswer(val);
+    container.appendChild(btn);
+  });
+}
+
+function selectAnswer(val) {
+  const q = QUESTIONS[current];
+  answers[q.id] = val;
+
+  // Flash selection then advance
+  renderQuestion();
+  setTimeout(() => {
+    const qt = document.getElementById('question-text');
+    qt.classList.add('fade-out');
+    setTimeout(() => {
+      if (current < QUESTIONS.length - 1) {
+        current++;
+        renderQuestion();
+        qt.classList.remove('fade-out');
+      } else {
+        finalScore = calcScore();
+        showScreen('gate');
+      }
+    }, 220);
+  }, 300);
+}
+
+function prevQuestion() {
+  if (current > 0) { current--; renderQuestion(); }
+}
+
+function calcScore() {
+  let total = 0;
+  QUESTIONS.forEach(q => {
+    const raw = answers[q.id] || 3;
+    total += q.reverse ? (6 - raw) : raw;
+  });
+  return Math.round((total / (QUESTIONS.length * 5)) * 100);
+}
+
+// ══════════════════════════════════════════
+// EMAIL GATE
+// ══════════════════════════════════════════
+async function submitEmail() {
+  const email = document.getElementById('input-email').value.trim();
+  const name  = document.getElementById('input-name').value.trim();
+  const errEl = document.getElementById('email-error');
+  const btn   = document.getElementById('gate-submit-btn');
+
+  if (!email || !email.includes('@')) {
+    errEl.style.display = 'block';
+    document.getElementById('input-email').classList.add('error');
+    return;
+  }
+  errEl.style.display = 'none';
+  btn.textContent = 'One moment...';
+  btn.disabled = true;
+
+  // ── Send to your endpoint ──
+  // Replace the URL below with your Formspree or other endpoint
+  const ENDPOINT = ''; // e.g. 'https://formspree.io/f/yourcode'
+  if (ENDPOINT) {
+    try {
+      await fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, score: finalScore })
+      });
+    } catch(e) { /* fail silently */ }
+  }
+
+  userName = name;
+  btn.textContent = 'See My Results →';
+  btn.disabled = false;
+  showResults();
+}
+
+// ══════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════
+function getArchetype(score) {
+  return ARCHETYPES.find(a => score >= a.min && score <= a.max) || ARCHETYPES[4];
+}
+
+function showResults() {
+  const a = getArchetype(finalScore);
+  const circumference = 2 * Math.PI * 54;
+  const offset = circumference - (finalScore / 100) * circumference;
+
+  // Top bar colour
+  document.getElementById('result-top-bar').style.background = a.color;
+
+  // Greeting
+  const greetEl = document.getElementById('result-greeting');
+  if (userName) { greetEl.textContent = 'Here are your results, ' + userName.split(' ')[0] + '.'; greetEl.style.display = 'block'; }
+  else { greetEl.style.display = 'none'; }
+
+  // Score ring
+  document.getElementById('score-display').textContent = finalScore;
+  document.getElementById('score-display').style.color = a.color;
+  const arc = document.getElementById('score-arc');
+  arc.style.stroke = a.color;
+  setTimeout(() => { arc.style.strokeDashoffset = offset; }, 100);
+
+  // Archetype
+  document.getElementById('archetype-symbol').textContent = a.symbol;
+  document.getElementById('archetype-symbol').style.color = a.color;
+  document.getElementById('archetype-name').textContent = a.name;
+  document.getElementById('archetype-tagline').textContent = a.tagline;
+  document.getElementById('archetype-summary').textContent = a.summary;
+
+  // Strengths
+  const sl = document.getElementById('strengths-list');
+  sl.innerHTML = a.strengths.map(s => `<div class="mini-item"><div class="mini-dot" style="color:#C8A96E">◆</div><div class="mini-text">${s}</div></div>`).join('');
+
+  // Watchouts
+  const wl = document.getElementById('watchouts-list');
+  wl.innerHTML = a.watchouts.map(w => `<div class="mini-item"><div class="mini-dot" style="color:#DA8A8A">◆</div><div class="mini-text">${w}</div></div>`).join('');
+
+  // Next move
+  document.getElementById('next-card').style.borderLeft = '3px solid ' + a.color;
+  document.getElementById('next-label').style.color = a.color;
+  document.getElementById('next-text').textContent = a.next;
+
+  showScreen('result');
+}
+
+function restart() {
+  current = 0; answers = {}; finalScore = null; userName = '';
+  document.getElementById('input-name').value = '';
+  document.getElementById('input-email').value = '';
+  showScreen('intro');
+}
+</script>
+</body>
+</html>
